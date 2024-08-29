@@ -77,7 +77,8 @@ const VotePage = () => {
 
       window.location.href = "/result";
     } catch (error) {
-      alert("Something went wrong. Please try again.");
+      alert("投票は1度までです");
+      window.location.href = "/result";
     }
   };
 
