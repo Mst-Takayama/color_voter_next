@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Spinner } from "@nextui-org/react"; // Spinnerをインポート
 import clsx from "clsx";
 
 import DressBox from "@/components/dress-box"; // DressBoxコンポーネントをインポート
@@ -17,6 +18,7 @@ type Dress = {
 
 const ResultsPage = () => {
   const [dress, setDress] = useState<Dress | null>(null);
+  const [loading, setLoading] = useState(true); // ローディング状態の管理
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -32,14 +34,24 @@ const ResultsPage = () => {
         });
       } catch (error) {
         window.location.href = "/";
+      } finally {
+        setLoading(false); // データフェッチが終わったらローディング状態を終了
       }
     };
 
     fetchResults();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner size="lg" /> {/* ローディング中にスピナーを表示 */}
+      </div>
+    );
+  }
+
   if (!dress) {
-    return <div>Loading...</div>; // データがロードされるまでローディング表示
+    return <div>データがありません</div>; // ドレスのデータがない場合
   }
 
   return (
