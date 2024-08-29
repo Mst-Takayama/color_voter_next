@@ -1,56 +1,177 @@
-import { Link } from "@nextui-org/link";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code";
-import { button as buttonStyles } from "@nextui-org/theme";
+"use client";
 
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+import { useState, useEffect } from "react";
+import { Button, Input } from "@nextui-org/react";
+import { v4 as uuidv4 } from "uuid";
+import { clsx } from "clsx";
 
-export default function Home() {
+import { apiFetch } from "../components/api";
+import DressBox from "../components/dress-box"; // DressBoxをインポート
+
+import { fontRobotoSerif, fontShipporiMincho } from "@/config/fonts";
+import CountdownTimer from "@/components/countdown-timer";
+
+const VotePage = () => {
+  const [name, setName] = useState("");
+  const [selectedDressId, setSelectedDressId] = useState<number | null>(null);
+  const [dresses, setDresses] = useState<
+    Array<{
+      id: number;
+      name: string;
+      voted_count: number;
+      odds: number;
+      imageSrc: string;
+    }>
+  >([]);
+
+  useEffect(() => {
+    const fetchDresses = async () => {
+      try {
+        const data = await apiFetch("/votes/new");
+
+        setDresses(
+          data.map(
+            (dress: {
+              id: number;
+              name: string;
+              voted_count: number;
+              odds: number;
+            }) => ({
+              ...dress,
+              imageSrc: `/${dress.name}.svg`, // 画像パスを適宜設定
+            }),
+          ),
+        );
+      } catch (error) {
+        window.location.href = "/result";
+      }
+    };
+
+    fetchDresses();
+  }, []);
+
+  const handleVote = async () => {
+    if (selectedDressId === null) {
+      alert("Please select a dress color before submitting your vote.");
+
+      return;
+    }
+
+    const token = uuidv4();
+
+    localStorage.setItem("X-User-Token", token);
+
+    const voteData = {
+      vote: {
+        user_name: name,
+        user_token: token,
+        dress_id: selectedDressId,
+      },
+    };
+
+    try {
+      await apiFetch("/votes", {
+        method: "POST",
+        body: JSON.stringify(voteData),
+      });
+
+      window.location.href = "/result";
+    } catch (error) {
+      alert("Something went wrong. Please try again.");
+    }
+  };
+
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-xl text-center justify-center">
-        <h1 className={title()}>Make&nbsp;</h1>
-        <h1 className={title({ color: "violet" })}>beautiful&nbsp;</h1>
-        <br />
-        <h1 className={title()}>
-          websites regardless of your design experience.
-        </h1>
-        <h2 className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
-        </h2>
+    <div className="relative max-w-screen-sm mx-auto">
+      <div className="absolute top-0 right-0 w-[70%] h-[37%] bg-[#f2f2f2] z-0" />
+      <div className="body-text pl-4 relative z-10 ml-[5%]">
+        <div className="title flex justify-around pt-12">
+          <h1
+            className={clsx(
+              "text-neutral-800 text-4xl font-normal leading-9 tracking-[2.88px]",
+              fontRobotoSerif.className,
+            )}
+          >
+            Guess
+          </h1>
+          <p
+            className={clsx(
+              "text-black text-xs font-normal mt-3 mr-2",
+              fontShipporiMincho.className,
+            )}
+          >
+            ― 新婦のドレスカラーを予想しよう ―
+          </p>
+        </div>
+
+        <div
+          className={clsx(
+            "pl-4 mt-3 text-black text-xs font-normal leading-[30px] tracking-wide",
+            fontShipporiMincho.className,
+          )}
+        >
+          新婦のお色直しのドレスは何色だと思いますか?
+          <br />
+          私(新郎)は黒色一点張りでいこうと思います
+          <br />
+          黒のドレスってかっこよくて
+          <br />
+          東京會舘みたいな会場の雰囲気に
+          <br />
+          マッチすると思いませんか
+          <br />
+          是非皆さんが正解だと思う色に投票をしてください
+          <br />
+          正解者の中から抽選でオッズに応じた
+          <br />
+          ギフトを用意しております
+          <br />
+          お名前の入力も忘れずに
+          <br />
+        </div>
       </div>
 
-      <div className="flex gap-3">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-          href={siteConfig.links.docs}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
+      <div className="absolute top-[41%] left-0 w-[70%] h-[42%] bg-[#f2f2f2] z-0 max-w-96" />
+      <div className="flex justify-center mt-20 relative z-10">
+        <CountdownTimer />
       </div>
 
-      <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
+      <div className="form flex flex-col w-[95%] mx-auto max-w-96">
+        <div className="grid grid-cols-2 gap-2 mt-12 mb-10 relative z-10">
+          {dresses.map((dress) => (
+            <DressBox
+              key={dress.id}
+              id={dress.id}
+              imageSrc={dress.imageSrc}
+              name={dress.name}
+              odds={dress.odds}
+              selected={dress.id === selectedDressId}
+              votedCount={dress.voted_count}
+              onClick={setSelectedDressId}
+            />
+          ))}
+        </div>
+
+        <Input
+          isClearable
+          className="mt-6 w-[316px] mx-auto"
+          label="お名前"
+          placeholder="入力してください"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Button
+          className={clsx(
+            "mt-10 w-[214px] rounded-full mx-auto",
+            fontShipporiMincho.className,
+          )}
+          onClick={handleVote}
+        >
+          送信
+        </Button>
       </div>
-    </section>
+    </div>
   );
-}
+};
+
+export default VotePage;

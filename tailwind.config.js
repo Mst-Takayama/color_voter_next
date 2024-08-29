@@ -9,6 +9,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        borderFlow: {
+          '100%': {height: '40px'},
+          '0%': {height: '30px'}
+        },
+      },
+      animation: {
+        borderFlow: 'borderFlow 2s infinite'
+      },
       fontFamily: {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],
