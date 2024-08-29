@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Button, Input } from "@nextui-org/react";
-import { v4 as uuidv4 } from "uuid";
 import { clsx } from "clsx";
+import { v4 as uuidv4 } from "uuid";
 
 import { apiFetch } from "../components/api";
 import DressBox from "../components/dress-box"; // DressBoxをインポート
@@ -57,9 +57,16 @@ const VotePage = () => {
       return;
     }
 
-    const token = uuidv4();
+    let token;
 
-    localStorage.setItem("X-User-Token", token);
+    // ローカルストレージにトークンがある場合は既存のトークンを使用
+    if (localStorage.getItem("X-User-Token")) {
+      token = localStorage.getItem("token");
+    } else {
+      // ない場合は新規トークンを取得
+      token = uuidv4();
+      localStorage.setItem("X-User-Token", token);
+    }
 
     const voteData = {
       vote: {
