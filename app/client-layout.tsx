@@ -60,7 +60,7 @@ export default function ClientLayout({
             >
               Scroll
             </div>
-            <div className="w-[42px] h-[0px] mt-5 border-t-1 border-white transform rotate-90 animate-indeterminate-bar " />
+            <div className="w-[42px] h-[0px] mt-10 border-t-1 border-white transform rotate-90 animate-indeterminate-bar " />
           </div>
         </div>
         {children}

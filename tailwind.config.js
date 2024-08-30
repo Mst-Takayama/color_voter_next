@@ -10,13 +10,13 @@ module.exports = {
   theme: {
     extend: {
       keyframes: {
-        borderFlow: {
-          '100%': {height: '40px'},
-          '0%': {height: '30px'}
+        'indeterminate-bar': {
+          '0%': { transform: 'rotate(-90deg) translateX(-30%) scaleX(0.2)' },
+          '100%': { transform: 'rotate(-90deg) translateX(50%) scaleX(1)' },
         },
       },
       animation: {
-        borderFlow: 'borderFlow 2s infinite'
+        'indeterminate-bar': 'indeterminate-bar 1.5s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite',
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
