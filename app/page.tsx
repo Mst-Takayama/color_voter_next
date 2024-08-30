@@ -155,10 +155,19 @@ const VotePage = () => {
         </div>
       </div>
 
-      <div className="absolute top-[41%] left-0 w-[70%] h-[42%] bg-[#f2f2f2] z-0 max-w-96" />
+      <div className="absolute top-[60%] left-0 w-[70%] h-[30%] bg-[#f2f2f2] z-0 max-w-96" />
       <div className="flex justify-center mt-20 relative z-10">
         <CountdownTimer />
       </div>
+
+      <Input
+        isClearable
+        className="mt-6 w-[316px] mx-auto"
+        label="お名前"
+        placeholder="入力してください"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
       <div className="form flex flex-col w-[95%] mx-auto max-w-96">
         <div className="grid grid-cols-2 gap-2 mt-12 mb-10 relative z-10">
@@ -176,14 +185,6 @@ const VotePage = () => {
           ))}
         </div>
 
-        <Input
-          isClearable
-          className="mt-6 w-[316px] mx-auto"
-          label="お名前"
-          placeholder="入力してください"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
         <Button
           className={clsx(
             "mt-10 w-[214px] rounded-full mx-auto",
