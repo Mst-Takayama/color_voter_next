@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { clsx } from "clsx";
 import { v4 as uuidv4 } from "uuid";
+import { usePathname } from "next/navigation";
 
 import { apiFetch } from "../components/api";
 import DressBox from "../components/dress-box"; // DressBoxをインポート
@@ -23,6 +24,21 @@ const VotePage = () => {
       imageSrc: string;
     }>
   >([]);
+
+  const pathname = usePathname(); // 現在のパスを取得
+
+  useEffect(() => {
+    // ブラウザバック時にページを再読み込み
+    const handlePopState = () => {
+      window.location.reload();
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [pathname]); // pathnameが変更されるたびに再度設定
 
   useEffect(() => {
     const fetchDresses = async () => {
