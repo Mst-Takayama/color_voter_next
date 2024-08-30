@@ -27,6 +27,18 @@ export default function ClientLayout({
     return () => clearTimeout(timeoutId);
   }, [pathname]);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      window.location.reload(); // ページをリロード
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col h-screen relative">
       {isLoading && (
