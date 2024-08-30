@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect } from "react";
 import clsx from "clsx";
 import Image from "next/image";
-import { usePathname } from "next/navigation"; // usePathname のみを使用
+import { usePathname } from "next/navigation"; // usePathname を使用
 
 import { fontZilla, fontUbuntuMono } from "@/config/fonts";
 
@@ -13,20 +13,19 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const pathname = usePathname(); // 現在のパスを取得
 
   useEffect(() => {
-    const handleStart = () => startTransition(() => setIsLoading(true));
-    const handleComplete = () => startTransition(() => setIsLoading(false));
+    // ページが変更された際にローディングを開始・終了する
+    setIsLoading(true);
 
-    handleStart(); // 初回ロード時にローディングを開始
-    handleComplete(); // 初回ロード完了時にローディングを終了
+    // 模擬的に少し遅延を入れてローディングのエフェクトを確認
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+    }, 500); // 0.5秒後にローディング終了
 
-    return () => {
-      handleComplete(); // クリーンアップ時にローディングを解除
-    };
-  }, [pathname, isPending]);
+    return () => clearTimeout(timeoutId);
+  }, [pathname]);
 
   return (
     <div className="flex flex-col h-screen relative">
