@@ -19,7 +19,6 @@ export default function ClientLayout({
     // ページが変更された際にローディングを開始・終了する
     setIsLoading(true);
 
-    // 模擬的に少し遅延を入れてローディングのエフェクトを確認
     const timeoutId = setTimeout(() => {
       setIsLoading(false);
     }, 500); // 0.5秒後にローディング終了
@@ -32,10 +31,18 @@ export default function ClientLayout({
       window.location.reload(); // ページをリロード
     };
 
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    };
+
     window.addEventListener("popstate", handlePopState);
+    window.addEventListener("pageshow", handlePageShow);
 
     return () => {
       window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("pageshow", handlePageShow);
     };
   }, []);
 
