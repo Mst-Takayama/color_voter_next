@@ -31,7 +31,7 @@ const ResultsPage = () => {
   const [loading, setLoading] = useState(true); // ローディング状態の管理
   // idに対応する色を定義
   // 1: 黒, 2: 桃, 3: 水, 4: 翠
-  const colors = ["#00000087", "#ef45d556", "#6ef5f57d", "#4efd4e82"];
+  const colors = ["#00000096", "#ef45d586", "#6ef5f595", "#4efd4e8d"];
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -77,31 +77,11 @@ const ResultsPage = () => {
 
   return (
     <div className="relative max-w-screen-sm mx-auto">
-      <div className="absolute top-0 right-0 w-[50%] h-[45%] bg-[#f2f2f2] z-0" />
+      <div className="absolute top-0 right-0 w-[100%] h-[100%] bg-[#fbfbfb] z-0" />
       <div className="p-4 relative z-10 flex justify-center flex-col items-center">
         <div
           className={clsx(
             "text-black text-2xl font-normal leading-normal tracking-widest",
-            fontShipporiMincho.className,
-          )}
-        >
-          <p>あなたの</p>
-          <p>選んだ色は</p>
-        </div>
-        <div className="mt-4">
-          <DressBox
-            id={dress.id}
-            imageSrc={dress.imageSrc}
-            name={dress.name}
-            odds={dress.odds}
-            selected={false} // 結果ページなので選択状態は関係なし
-            votedCount={dress.voted_count}
-            onClick={() => {}} // onClickは無効化
-          />
-        </div>
-        <div
-          className={clsx(
-            "text-black text-2xl font-normal leading-normal tracking-widest mt-16",
             fontShipporiMincho.className,
           )}
         >
@@ -126,6 +106,27 @@ const ResultsPage = () => {
             </Pie>
           </PieChart>
         </ResponsiveContainer>
+
+        <div
+          className={clsx(
+            "text-black text-2xl font-normal leading-normal tracking-widest",
+            fontShipporiMincho.className,
+          )}
+        >
+          <p>あなたの</p>
+          <p>選んだ色は</p>
+        </div>
+        <div className="mt-4">
+          <DressBox
+            id={dress.id}
+            imageSrc={dress.imageSrc}
+            name={dress.name}
+            odds={dress.odds}
+            selected={false} // 結果ページなので選択状態は関係なし
+            votedCount={dress.voted_count}
+            onClick={() => {}} // onClickは無効化
+          />
+        </div>
       </div>
     </div>
   );
